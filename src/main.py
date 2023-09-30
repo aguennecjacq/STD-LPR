@@ -23,14 +23,11 @@ if __name__ == "__main__":
     nb_iter = 400
     mu = 0.0111
 
-    ref_texture = get_img("/home/aguennecjacq/Documents/these/icip_paper/results_0.65/Barbara/texture_0.65.png") - 0.5
     structure, texture = std_lpr(input_image,  patch_size, rho, mu, nb_iter)
     try:
         os.mkdir(output_folder + f"/{input_image_name}")
     except FileExistsError:
         pass
-    print(f"mu = {mu}")
-    print(f"l2 norm : lpr:{l2_norm(texture)}, ours:{l2_norm(ref_texture)}, diff= {abs(l2_norm(texture) - l2_norm(ref_texture))}")
 
     save_img(structure, f"{output_folder}/{input_image_name}/structure_lpr.png")
     save_img(texture + 0.5, f"{output_folder}/{input_image_name}/texture_lpr.png")
