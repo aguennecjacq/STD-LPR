@@ -4,7 +4,7 @@ import numpy as np
 
 @jit(void(float64[:, :], float64), cache=True, nopython=True)
 def svt(input_array, tau):
-    u, d, v = np.linalg.svd(input_array, full_matrices=False)  # ideally we should use the option compute_uv=False, but jit doesn't allow us this
+    u, d, v = np.linalg.svd(input_array, full_matrices=False)  # ideally we should use the option compute_uv=False, but jit doesn't allow it
     d_ = np.zeros_like(d)
     for idx in range(len(d)):
         if d[idx] > tau:
@@ -16,7 +16,7 @@ def svt(input_array, tau):
 
 @jit(float64[:, :, :](float64[:, :]), fastmath=True, nopython=True)
 def D(input_array):
-    output = np.ascontiguousarray(np.zeros(input_array.shape + (2,)))
+    output = np.zeros(input_array.shape + (2,))
     output[:-1, :, 0] = input_array[1:, :] - input_array[:-1, :]  # grad x
     output[:, :-1, 1] = input_array[:, 1:] - input_array[:, :-1]  # grad y
     return output
@@ -24,8 +24,8 @@ def D(input_array):
 
 @jit(float64[:, :](float64[:, :, :]), fastmath=True, nopython=True)
 def div(input_array):
-    div_x = np.ascontiguousarray(np.zeros(input_array.shape[:2]))
-    div_y = np.ascontiguousarray(np.zeros(input_array.shape[:2]))
+    div_x = np.zeros(input_array.shape[:2])
+    div_y = np.zeros(input_array.shape[:2])
 
     div_x[1:-1, :] = input_array[1:-1, :, 0] - input_array[:-2, :, 0]
     div_x[0, :] = input_array[0, :, 0]
@@ -50,8 +50,8 @@ def project_unit(z):
         for j in range(z.shape[1]):
             norm_z = np.sqrt(z[i, j, 0] ** 2 + z[i, j, 1] ** 2)
             if norm_z > 1:
-                z[i, j, 0] = z[i, j, 0] / norm_z
-                z[i, j, 1] = z[i, j, 1] / norm_z
+                z[i, j, 0] /= norm_z
+                z[i, j, 1] /= norm_z
     return z
 
 

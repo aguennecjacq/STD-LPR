@@ -17,6 +17,7 @@ if __name__ == "__main__":
         image_file_path = sys.argv[1].replace('\\', '/')
     input_image_name = image_file_path.split("/")[-1].split(".")[0]
     input_image = get_img(image_file_path)
+    
     # structure-texture decomposition parameters
     patch_size = 5
     rho = 5.0   # ADMM adjustement parameter
